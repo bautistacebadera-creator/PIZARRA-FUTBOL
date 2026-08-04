@@ -26,13 +26,16 @@
 <!-- In-browser JSX transform -->
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- Bare-specifier imports resolved in the browser -->
+<!-- Bare-specifier imports resolved en el navegador.
+     El "?external=react" es clave: obliga a react-dom y lucide-react a
+     usar la MISMA copia de React declarada acá abajo, en vez de traer
+     cada uno la suya propia (eso rompía el montaje con pantalla negra). -->
 <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@18.3.1",
-    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-    "lucide-react": "https://esm.sh/lucide-react@0.383.0?deps=react@18.3.1"
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
+    "lucide-react": "https://esm.sh/lucide-react@0.383.0?external=react"
   }
 }
 </script>
@@ -40,10 +43,33 @@
 <style>
   html, body { margin: 0; padding: 0; background: #05070f; }
   #root { min-height: 100dvh; }
+  #boot-error {
+    display: none; position: fixed; inset: 0; background: #05070f;
+    color: #eef1f8; font: 13px/1.5 -apple-system, system-ui, sans-serif;
+    padding: 24px; overflow: auto; white-space: pre-wrap; z-index: 9999;
+  }
+  #boot-error h1 { color: #ff6b6b; font-size: 16px; margin: 0 0 10px; }
+  #boot-error code { color: #f4b400; }
 </style>
 </head>
 <body>
 <div id="root"></div>
+<div id="boot-error"></div>
+
+<!-- Si algo falla al cargar/montar la app, esto lo muestra en pantalla
+     en vez de dejar una pantalla negra sin pistas. -->
+<script>
+  window.addEventListener('error', (e) => {
+    const box = document.getElementById('boot-error');
+    if (!box) return;
+    box.style.display = 'block';
+    box.innerHTML =
+      '<h1>No se pudo cargar la pizarra</h1>' +
+      'Revisá la consola (F12) para más detalle. Error:\n<code>' +
+      (e.message || e) + '</code>' +
+      (e.filename ? '\n' + e.filename + ':' + e.lineno : '');
+  });
+</script>
 
 <script src="storage-polyfill.js"></script>
 <script type="text/babel" data-type="module" data-presets="react" src="app.jsx"></script>
