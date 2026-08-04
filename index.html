@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Pizarra 8</title>
+<meta name="description" content="Pizarra táctica de fútbol 8 para armar, dibujar y simular jugadas." />
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0b1220" />
+<meta name="background-color" content="#0b1220" />
+
+<!-- iOS install support -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Pizarra 8" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+
+<!-- Tailwind (no build step needed) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- In-browser JSX transform -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- Bare-specifier imports resolved in the browser -->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.383.0?deps=react@18.3.1"
+  }
+}
+</script>
+
+<style>
+  html, body { margin: 0; padding: 0; background: #05070f; }
+  #root { min-height: 100dvh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="storage-polyfill.js"></script>
+<script type="text/babel" data-type="module" data-presets="react" src="app.jsx"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
